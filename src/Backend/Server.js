@@ -14,6 +14,12 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+import path from 'path';
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+
 const OTP_STORE = new Map();
 const PORT = process.env.PORT || 5000;
 
@@ -223,15 +229,36 @@ app.post('/verify', async (req, res) => {
 
     if (verifyResponse.data.Details === 'OTP Matched') {
       OTP_STORE.delete(mobile);
-      res.json({ success: true, message: 'OTP verified' });
+
+      // ✅ Find the fisherman in DB
+      const fisherman = await Fisherman.findOne({ mobile: `+91${mobile}` });
+
+      if (!fisherman) {
+        return res.status(404).json({ success: false, message: 'Fisherman not found' });
+      }
+
+      // ✅ Create token with JWT
+      const token = jwt.sign(
+        { id: fisherman._id, role: 'fisherman' },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      // ✅ Send token back
+      return res.json({
+        success: true,
+        message: 'OTP verified',
+        token,
+      });
     } else {
-      res.json({ success: false, message: 'Invalid OTP' });
+      return res.json({ success: false, message: 'Invalid OTP' });
     }
   } catch (err) {
     console.error('OTP verification error:', err.message || err);
     res.status(500).json({ success: false, message: 'Verification failed', error: err.message });
   }
 });
+
 // GET /fisherman/:licenseId - Fetch fisherman info by licenseId
 app.get('/fisherman/:licenseId', async (req, res) => {
   try {

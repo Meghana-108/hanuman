@@ -81,6 +81,12 @@ const BuyerHome = () => {
           </Row>
         </Container>
       </div>
+      <button
+          onClick={handleLogout}
+          className="bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow hover:bg-red-700 transition duration-300"
+        >
+          Logout
+        </button>
     </div>
   );
 };

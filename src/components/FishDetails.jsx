@@ -38,7 +38,7 @@ const FishDetails = () => {
       formData.append("status", status);
 
       const token = localStorage.getItem("token"); // Make sure token is stored after login
-
+     
       const response = await axios.post("http://localhost:5000/api/fish", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -46,7 +46,7 @@ const FishDetails = () => {
         },
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         setSuccess(true);
         // Clear the form
         setFishImage(null);
