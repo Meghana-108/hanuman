@@ -65,7 +65,7 @@ const Option = () => {
               View an overview of your fishing activities and insights.
             </p>
             <Link
-              to="/dashboard"
+              to="/fisherdashboard"
               className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-full font-medium shadow-md transition"
             >
               Go to Dashboard

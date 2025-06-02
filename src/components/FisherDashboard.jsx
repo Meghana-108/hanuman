@@ -31,11 +31,8 @@ const FisherDashboard = () => {
           key={fish._id}
           className="bg-white rounded-xl shadow-md overflow-hidden border hover:shadow-lg"
         >
-          <img
-            src={`http://localhost:5000/uploads/${fish.fishImage}`}
-            alt={fish.fishName}
-            className="w-full h-48 object-cover"
-          />
+         <img src={`http://localhost:5000${fish.imageUrl}`} alt={fish.fishName} className="w-full h-48 object-cover" />
+
           <div className="p-4">
             <h2 className="text-xl font-bold text-blue-700">{fish.fishName}</h2>
             <p className="text-gray-600">📍 {fish.location}</p>
