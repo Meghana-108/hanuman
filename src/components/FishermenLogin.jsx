@@ -9,8 +9,11 @@ import {
   Button,
   Alert,
 } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 function FishermenLogin() {
+  const navigate = useNavigate();
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -48,8 +51,11 @@ function FishermenLogin() {
         otp,
       });
       if (res.data.success) {
-        alert('Login Successful');
-        window.location.href = '/home';
+        localStorage.setItem('isLoggedIn', 'true');
+        setError('');
+        setMessage('');
+        // Use react-router navigation instead of window.location
+        navigate('/fisherhome');
       } else {
         setError(res.data.message);
       }
@@ -60,16 +66,15 @@ function FishermenLogin() {
 
   return (
     <div
-  style={{
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #ccefff, #e0f7fa)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '20px',
-  }}
->
-
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #ccefff, #e0f7fa)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px',
+      }}
+    >
       <Container>
         <Row className="justify-content-center">
           <Col xs={12} md={6} lg={4}>

@@ -8,6 +8,7 @@ import cors from 'cors';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import multer from "multer";
 
 const app = express();
 app.use(cors());
@@ -21,8 +22,8 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('✅ MongoDB connected'))
-.catch((err) => console.error('❌ MongoDB connection error:', err));
+.then(() => console.log(' MongoDB connected'))
+.catch((err) => console.error(' MongoDB connection error:', err));
 
 // Mongoose schemas and models
 const fishermanSchema = new mongoose.Schema({
@@ -44,12 +45,29 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+const fishSchema = new mongoose.Schema({
+  fishermanId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  fishName: String,
+  location: String,
+  price: Number,
+  status: String,
+  imageUrl: String,
+  createdAt: { type: Date, default: Date.now }
+});
+const Fish = mongoose.model("Fish", fishSchema);
 // JWT secret key
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
-  console.error('❌ JWT_SECRET is not defined in .env file');
+  console.error('JWT_SECRET is not defined in .env file');
   process.exit(1);
 }
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) =>
+    cb(null, `${Date.now()}-${file.originalname}`)
+});
+const upload = multer({ storage });
 
 // Helper: generate JWT token
 const generateToken = (user) => {
@@ -214,7 +232,6 @@ app.post('/verify', async (req, res) => {
     res.status(500).json({ success: false, message: 'Verification failed', error: err.message });
   }
 });
-
 // GET /fisherman/:licenseId - Fetch fisherman info by licenseId
 app.get('/fisherman/:licenseId', async (req, res) => {
   try {
@@ -246,6 +263,32 @@ app.get('/test-fisherman', async (req, res) => {
   } catch (err) {
     console.error('Error fetching fisherman:', err);
     res.status(500).json({ success: false, message: 'Error fetching data', error: err.message });
+  }
+});
+
+app.post("/api/fish",  authenticateToken, upload.single("fishImage"), async (req, res) => {
+  try {
+    const fish = new Fish({
+      fishermanId: req.user.id,
+      fishName: req.body.fishName,
+      location: req.body.location,
+      price: req.body.price,
+      status: req.body.status,
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : ""
+    });
+    await fish.save();
+    res.status(201).json(fish);
+  } catch (err) {
+    res.status(500).json({ error: "Upload failed" });
+  }
+});
+
+app.get("/api/fishes/mine",  authenticateToken, async (req, res) => {
+  try {
+    const fishes = await Fish.find({ fishermanId: req.user.id });
+    res.json(fishes);
+  } catch {
+    res.status(500).json({ error: "Error fetching fish" });
   }
 });
 

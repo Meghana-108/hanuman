@@ -1,12 +1,28 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const FisherHome = () => {
+  const navigate = useNavigate();
+
+  // Check login status on component mount
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("isLoggedIn");
+    if (!loggedIn) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    navigate("/login");
+  };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
       style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')", // Replace with your own fishing image
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')", // Replace with your own fishing image
       }}
     >
       {/* Overlay */}
@@ -20,12 +36,22 @@ const FisherHome = () => {
         <p className="text-lg text-gray-200 mb-6">
           Join our community of passionate fishermen. Share your catches, explore top fishing spots, and connect with fellow enthusiasts.
         </p>
+
         <Link
-  to="/option"
-  className="bg-yellow-300 text-gray-900 font-semibold py-2 px-6 rounded-full shadow hover:bg-yellow-400 transition duration-300"
->
-  Get Started
-</Link>
+          to="/option"
+          className="bg-yellow-300 text-gray-900 font-semibold py-2 px-6 rounded-full shadow hover:bg-yellow-400 transition duration-300 inline-block mb-6"
+        >
+          Get Started
+        </Link>
+
+        <br />
+
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow hover:bg-red-700 transition duration-300"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
