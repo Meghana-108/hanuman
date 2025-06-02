@@ -360,6 +360,42 @@ app.put('/api/fish/:id', authenticateToken, async (req, res) => {
   res.send(updated);
 });
 
+app.get('/api/fishes', async (req, res) => {
+  try {
+    const fishes = await Fish.aggregate([
+      {
+        $lookup: {
+          from: 'fishermen_verify',  // ensure this matches your actual collection name
+          localField: 'fishermanId',
+          foreignField: '_id',
+          as: 'fishermenInfo',
+        },
+      },
+      {
+        $unwind: {
+          path: '$fishermenInfo',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          fishName: 1,
+          price: 1,
+          imageUrl: 1,
+          fishermenName: '$fishermenInfo.name',
+        },
+      },
+    ]);
+
+
+    res.json(fishes);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
