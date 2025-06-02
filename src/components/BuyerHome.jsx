@@ -52,14 +52,14 @@ const BuyerHome = () => {
             <Col md={12}>
               <h2 className="display-5 fw-semibold fst-italic">Welcome to FishTank!</h2>
               <h1 className="display-6 fw-bold text-uppercase mb-4">Your Fish, Your Data, Your Way!</h1>
-              <Button
-                as={Link}
-                to="/browse"
-                variant="info"
-                className="px-4 py-2 fw-bold text-white mb-5"
-              >
-                More Info
-              </Button>
+             <Button
+  as={Link}
+  to="/buyer-dashboard"
+  variant="info"
+  className="px-4 py-2 fw-bold text-white mb-5"
+>
+  More Info
+</Button>
 
               {/* Offer Section */}
               <Card

@@ -8,7 +8,7 @@ import FisherHome from "./components/FisherHome";
 import Option from "./components/Option";
 import FishDetails from "./components/FishDetails";
 import FisherDashboard from "./components/FisherDashboard";
-
+import BuyerDashboard from "./components/BuyerDashboard";
 const App = () => {
   return (
     <Router>
@@ -21,6 +21,7 @@ const App = () => {
         <Route path="/option" element={<Option/>}/>
         <Route path="/FishDetails" element={<FishDetails/>}/>
         <Route path="/fisherdashboard" element={<FisherDashboard/>}/>
+        <Route path="/buyer-dashboard" element={<BuyerDashboard/>}/>
       </Routes>
     </Router>
   );
