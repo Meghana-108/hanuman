@@ -60,27 +60,34 @@ function FishermenLogin() {
 
   return (
     <div
-  style={{
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #ccefff, #e0f7fa)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '20px',
-  }}
->
-
+      style={{
+        minHeight: '100vh',
+        backgroundColor: '#e0f7fa', // Soft blue background
+        backgroundImage: `url('https://i.pinimg.com/736x/a4/40/4c/a4404cd2fbe3d2a11035e172cb4fa84a.jpg')`, // optional image
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'top center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '40px',
+      }}
+    >
       <Container>
         <Row className="justify-content-center">
-          <Col xs={12} md={6} lg={4}>
+          <Col xs={12} md={6} lg={5}>
             <Card
-              className="shadow-lg border-0 rounded-4"
-              style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', padding: '25px' }}
+              className="rounded-4 shadow"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.97)',
+                padding: '30px',
+                borderTop: '6px solid #00bcd4', // Sky blue top border
+              }}
             >
               <Card.Body>
-                <h3 className="text-center mb-4 text-primary fw-bold">
-                  {step === 1 ? 'Fishermen Login' : 'Verify OTP'}
-                </h3>
+                <h2 className="text-center fw-bold text-info mb-4">
+                  Fishermen Login
+                </h2>
 
                 {error && <Alert variant="danger">{error}</Alert>}
                 {message && <Alert variant="success">{message}</Alert>}
@@ -88,54 +95,70 @@ function FishermenLogin() {
                 {step === 1 ? (
                   <Form>
                     <Form.Group className="mb-3">
-                      <Form.Label>Name</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter name"
+                        placeholder="Enter your name"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
+                        className="rounded-3 text-center"
                       />
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                      <Form.Label>License ID</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter license ID"
+                        placeholder="Enter License ID"
                         name="licenseId"
                         value={formData.licenseId}
                         onChange={handleInputChange}
+                        className="rounded-3 text-center"
                       />
                     </Form.Group>
 
-                    <Form.Group className="mb-3">
-                      <Form.Label>Mobile Number</Form.Label>
+                    <Form.Group className="mb-4">
                       <Form.Control
                         type="text"
-                        placeholder="Enter mobile number"
+                        placeholder="Enter Mobile Number"
                         name="mobile"
                         value={formData.mobile}
                         onChange={handleInputChange}
+                        className="rounded-3 text-center"
                       />
                     </Form.Group>
 
-                    <Button variant="primary" className="w-100" onClick={handleLogin}>
+                    <Button
+                      style={{
+                        backgroundColor: '#00bcd4',
+                        borderColor: '#00bcd4',
+                        borderRadius: '25px',
+                      }}
+                      className="w-100"
+                      onClick={handleLogin}
+                    >
                       Send OTP
                     </Button>
                   </Form>
                 ) : (
                   <Form>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Enter OTP</Form.Label>
+                    <Form.Group className="mb-4">
                       <Form.Control
                         type="text"
                         placeholder="Enter OTP"
                         value={otp}
                         onChange={(e) => setOtp(e.target.value)}
+                        className="rounded-3 text-center"
                       />
                     </Form.Group>
-                    <Button variant="success" className="w-100" onClick={handleVerify}>
+                    <Button
+                      style={{
+                        backgroundColor: '#00bcd4',
+                        borderColor: '#00bcd4',
+                        borderRadius: '25px',
+                      }}
+                      className="w-100"
+                      onClick={handleVerify}
+                    >
                       Verify OTP
                     </Button>
                   </Form>
@@ -150,3 +173,4 @@ function FishermenLogin() {
 }
 
 export default FishermenLogin;
+
