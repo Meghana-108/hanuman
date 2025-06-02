@@ -343,6 +343,23 @@ app.get('/api/fish-quantity-summary', async (req, res) => {
   }
 });
 
+app.delete('/api/fish/:id', authenticateToken, async (req, res) => {
+  await Fish.findByIdAndDelete(req.params.id);
+  res.send({ message: "Fish deleted" });
+});
+
+// PUT update fish
+app.put('/api/fish/:id', authenticateToken, async (req, res) => {
+  const { fishName, location, price, status } = req.body;
+  const updated = await Fish.findByIdAndUpdate(req.params.id, {
+    fishName,
+    location,
+    price,
+    status,
+  }, { new: true });
+  res.send(updated);
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
