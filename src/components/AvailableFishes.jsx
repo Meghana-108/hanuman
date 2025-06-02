@@ -23,8 +23,17 @@ const AvailableFishes = () => {
   useEffect(() => {
     axios.get('/api/fish-quantity-summary')
       .then(res => {
-        const labels = res.data.map(item => item.fishName);
-        const quantities = res.data.map(item => item.quantity);
+        console.log('API Response:', res.data); // Debug log
+
+        // Adjust based on API structure
+        const fishData = Array.isArray(res.data)
+          ? res.data
+          : Array.isArray(res.data.data)
+            ? res.data.data
+            : [];
+
+        const labels = fishData.map(item => item.fishName);
+        const quantities = fishData.map(item => item.quantity);
 
         setChartData({
           labels,
@@ -39,7 +48,9 @@ const AvailableFishes = () => {
           ]
         });
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error('Error fetching data:', err);
+      });
   }, []);
 
   return (
