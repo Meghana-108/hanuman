@@ -310,7 +310,7 @@ app.post("/api/fish",  authenticateToken, upload.single("fishImage"), async (req
   }
 });
 
-app.get("/api/fishes/mine",  authenticateToken, async (req, res) => {
+app.get("/api/fish",  authenticateToken, async (req, res) => {
   try {
     const fishes = await Fish.find({ fishermanId: req.user.id });
     res.json(fishes);
