@@ -9,8 +9,11 @@ import {
   Button,
   Alert,
 } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 function FishermenLogin() {
+  const navigate = useNavigate();
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -48,8 +51,12 @@ function FishermenLogin() {
         otp,
       });
       if (res.data.success) {
-        alert('Login Successful');
-        window.location.href = '/home';
+         localStorage.setItem('token', res.data.token);
+        localStorage.setItem('isLoggedIn', 'true');
+        setError('');
+        setMessage('');
+        // Use react-router navigation instead of window.location
+        navigate('/fisherhome');
       } else {
         setError(res.data.message);
       }
@@ -62,32 +69,24 @@ function FishermenLogin() {
     <div
       style={{
         minHeight: '100vh',
-        backgroundColor: '#e0f7fa', // Soft blue background
-        backgroundImage: `url('https://i.pinimg.com/736x/a4/40/4c/a4404cd2fbe3d2a11035e172cb4fa84a.jpg')`, // optional image
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'top center',
+        background: 'linear-gradient(135deg, #ccefff, #e0f7fa)',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '40px',
+        padding: '20px',
       }}
     >
       <Container>
         <Row className="justify-content-center">
-          <Col xs={12} md={6} lg={5}>
+          <Col xs={12} md={6} lg={4}>
             <Card
-              className="rounded-4 shadow"
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.97)',
-                padding: '30px',
-                borderTop: '6px solid #00bcd4', // Sky blue top border
-              }}
+              className="shadow-lg border-0 rounded-4"
+              style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', padding: '25px' }}
             >
               <Card.Body>
-                <h2 className="text-center fw-bold text-info mb-4">
-                  Fishermen Login
-                </h2>
+                <h3 className="text-center mb-4 text-primary fw-bold">
+                  {step === 1 ? 'Fishermen Login' : 'Verify OTP'}
+                </h3>
 
                 {error && <Alert variant="danger">{error}</Alert>}
                 {message && <Alert variant="success">{message}</Alert>}
@@ -95,70 +94,54 @@ function FishermenLogin() {
                 {step === 1 ? (
                   <Form>
                     <Form.Group className="mb-3">
+                      <Form.Label>Name</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter your name"
+                        placeholder="Enter name"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="rounded-3 text-center"
                       />
                     </Form.Group>
 
                     <Form.Group className="mb-3">
+                      <Form.Label>License ID</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter License ID"
+                        placeholder="Enter license ID"
                         name="licenseId"
                         value={formData.licenseId}
                         onChange={handleInputChange}
-                        className="rounded-3 text-center"
                       />
                     </Form.Group>
 
-                    <Form.Group className="mb-4">
+                    <Form.Group className="mb-3">
+                      <Form.Label>Mobile Number</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter Mobile Number"
+                        placeholder="Enter mobile number"
                         name="mobile"
                         value={formData.mobile}
                         onChange={handleInputChange}
-                        className="rounded-3 text-center"
                       />
                     </Form.Group>
 
-                    <Button
-                      style={{
-                        backgroundColor: '#00bcd4',
-                        borderColor: '#00bcd4',
-                        borderRadius: '25px',
-                      }}
-                      className="w-100"
-                      onClick={handleLogin}
-                    >
+                    <Button variant="primary" className="w-100" onClick={handleLogin}>
                       Send OTP
                     </Button>
                   </Form>
                 ) : (
                   <Form>
-                    <Form.Group className="mb-4">
+                    <Form.Group className="mb-3">
+                      <Form.Label>Enter OTP</Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="Enter OTP"
                         value={otp}
                         onChange={(e) => setOtp(e.target.value)}
-                        className="rounded-3 text-center"
                       />
                     </Form.Group>
-                    <Button
-                      style={{
-                        backgroundColor: '#00bcd4',
-                        borderColor: '#00bcd4',
-                        borderRadius: '25px',
-                      }}
-                      className="w-100"
-                      onClick={handleVerify}
-                    >
+                    <Button variant="success" className="w-100" onClick={handleVerify}>
                       Verify OTP
                     </Button>
                   </Form>
@@ -173,4 +156,3 @@ function FishermenLogin() {
 }
 
 export default FishermenLogin;
-

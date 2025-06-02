@@ -8,10 +8,17 @@ import cors from 'cors';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import multer from "multer";
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+import path from 'path';
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
 
 const OTP_STORE = new Map();
 const PORT = process.env.PORT || 5000;
@@ -21,8 +28,8 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('✅ MongoDB connected'))
-.catch((err) => console.error('❌ MongoDB connection error:', err));
+.then(() => console.log(' MongoDB connected'))
+.catch((err) => console.error(' MongoDB connection error:', err));
 
 // Mongoose schemas and models
 const fishermanSchema = new mongoose.Schema({
@@ -44,12 +51,29 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+const fishSchema = new mongoose.Schema({
+  fishermanId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  fishName: String,
+  location: String,
+  price: Number,
+  status: String,
+  imageUrl: String,
+  createdAt: { type: Date, default: Date.now }
+});
+const Fish = mongoose.model("Fish", fishSchema);
 // JWT secret key
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
-  console.error('❌ JWT_SECRET is not defined in .env file');
+  console.error('JWT_SECRET is not defined in .env file');
   process.exit(1);
 }
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) =>
+    cb(null, `${Date.now()}-${file.originalname}`)
+});
+const upload = multer({ storage });
 
 // Helper: generate JWT token
 const generateToken = (user) => {
@@ -205,9 +229,29 @@ app.post('/verify', async (req, res) => {
 
     if (verifyResponse.data.Details === 'OTP Matched') {
       OTP_STORE.delete(mobile);
-      res.json({ success: true, message: 'OTP verified' });
+
+      // ✅ Find the fisherman in DB
+      const fisherman = await Fisherman.findOne({ mobile: `+91${mobile}` });
+
+      if (!fisherman) {
+        return res.status(404).json({ success: false, message: 'Fisherman not found' });
+      }
+
+      // ✅ Create token with JWT
+      const token = jwt.sign(
+        { id: fisherman._id, role: 'fisherman' },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      // ✅ Send token back
+      return res.json({
+        success: true,
+        message: 'OTP verified',
+        token,
+      });
     } else {
-      res.json({ success: false, message: 'Invalid OTP' });
+      return res.json({ success: false, message: 'Invalid OTP' });
     }
   } catch (err) {
     console.error('OTP verification error:', err.message || err);
@@ -246,6 +290,32 @@ app.get('/test-fisherman', async (req, res) => {
   } catch (err) {
     console.error('Error fetching fisherman:', err);
     res.status(500).json({ success: false, message: 'Error fetching data', error: err.message });
+  }
+});
+
+app.post("/api/fish",  authenticateToken, upload.single("fishImage"), async (req, res) => {
+  try {
+    const fish = new Fish({
+      fishermanId: req.user.id,
+      fishName: req.body.fishName,
+      location: req.body.location,
+      price: req.body.price,
+      status: req.body.status,
+      imageUrl: req.file ? `/uploads/${req.file.filename}` : ""
+    });
+    await fish.save();
+    res.status(201).json(fish);
+  } catch (err) {
+    res.status(500).json({ error: "Upload failed" });
+  }
+});
+
+app.get("/api/fish",  authenticateToken, async (req, res) => {
+  try {
+    const fishes = await Fish.find({ fishermanId: req.user.id });
+    res.json(fishes);
+  } catch {
+    res.status(500).json({ error: "Error fetching fish" });
   }
 });
 
