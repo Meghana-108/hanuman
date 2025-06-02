@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user)); // optional if you want user info
+        localStorage.setItem("user", JSON.stringify(data.user));
 
         try {
           const decoded = jwtDecode(data.token);
@@ -72,83 +73,65 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left image section */}
-      <div className="hidden md:flex w-1/2 bg-sky-400 items-center justify-center">
+    <Container fluid className="min-vh-100 d-flex flex-column flex-md-row p-0">
+      {/* Left image */}
+      <Col md={6} className="d-none d-md-flex bg-info justify-content-center align-items-center">
         <img
           src="https://i.pinimg.com/736x/48/17/2d/48172dc2448b4bb1dcce3ef929ab3082.jpg"
           alt="Login Illustration"
-          className="w-3/4"
+          style={{ width: "75%" }}
         />
-      </div>
+      </Col>
 
-      {/* Login form section */}
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-sky-50 px-8 py-12">
-        <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-md">
-          <h2 className="text-3xl font-bold text-center text-sky-600 mb-2">
-            Welcome Back
-          </h2>
-          <p className="text-center text-gray-500 mb-6">
-            Please login to your account
-          </p>
+      {/* Right login form */}
+      <Col md={6} className="d-flex align-items-center justify-content-center bg-light">
+        <Card className="w-75 shadow p-4 rounded-4">
+          <h2 className="text-center text-info mb-2">Welcome Back</h2>
+          <p className="text-center text-secondary mb-4">Please login to your account</p>
 
-          {error && (
-            <div className="text-red-600 text-sm mb-4 text-center">{error}</div>
-          )}
+          {error && <Alert variant="danger" className="text-center">{error}</Alert>}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="formEmail">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
                 type="email"
+                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-                placeholder="you@example.com"
                 required
               />
-            </div>
+            </Form.Group>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
+            <Form.Group className="mb-3" controlId="formPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
                 type="password"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-                placeholder="••••••••"
                 required
               />
-            </div>
+            </Form.Group>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" className="accent-sky-600" />
-                <span>Remember me</span>
-              </label>
-            </div>
+            <Form.Group className="mb-3 d-flex justify-content-between align-items-center">
+              <Form.Check type="checkbox" label="Remember me" />
+            </Form.Group>
 
-            <button
-              type="submit"
-              className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 rounded-lg transition duration-200"
-            >
+            <Button variant="info" type="submit" className="w-100 text-white fw-semibold">
               Login
-            </button>
-          </form>
+            </Button>
+          </Form>
 
-          <p className="mt-6 text-sm text-center text-gray-600">
+          <p className="mt-4 text-center text-secondary">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-sky-600 font-medium hover:underline">
+            <Link to="/signup" className="text-info fw-semibold text-decoration-none">
               Sign Up
             </Link>
           </p>
-        </div>
-      </div>
-    </div>
+        </Card>
+      </Col>
+    </Container>
   );
 };
 
