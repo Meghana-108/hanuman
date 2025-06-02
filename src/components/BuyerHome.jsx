@@ -1,4 +1,5 @@
 import React from 'react';
+import { Container, Row, Col, Button, Card, Navbar, Nav } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
 const BuyerHome = () => {
@@ -11,60 +12,75 @@ const BuyerHome = () => {
   };
 
   return (
-    <div className="font-sans min-h-screen flex flex-col text-white">
-      {/* Top bar */}
-      <div className="bg-cyan-600 text-sm text-white text-center py-1">
-        # 22 St. Black Road Raleigh, PA 34578
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Top Bar */}
+      <div className="bg-info text-white text-center py-1">
+        Fresh Catch, Delivered Right to You!
       </div>
 
-      {/* Navigation */}
-      <header className="flex items-center justify-between px-8 py-4 bg-white shadow-md text-gray-700">
-        <div className="text-cyan-600 text-2xl font-bold">⚓ FishTank</div>
-        <nav className="space-x-6 text-sm">
-          <Link to="/" className="hover:text-cyan-600">Home</Link>
-          <Link to="/about" className="hover:text-cyan-600">About Us</Link>
-          <Link to="/club" className="hover:text-cyan-600">Club</Link>
-          <Link to="/pricing" className="hover:text-cyan-600">Pricing</Link>
-          <Link to="/gallery" className="hover:text-cyan-600">Gallery</Link>
-          <Link to="/blog" className="hover:text-cyan-600">Blog</Link>
-          <Link to="/contact" className="hover:text-cyan-600">Contact</Link>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-red-600 font-semibold hover:underline ml-4"
-          >
-            Logout
-          </button>
-        </nav>
-      </header>
+      {/* Navigation Bar */}
+      <Navbar bg="white" expand="lg" className="shadow-sm px-4">
+        <Navbar.Brand className="text-info fw-bold">⚓ FishTank</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+         
+        </Navbar.Collapse>
+      </Navbar>
 
-      {/* Hero + Offer Section in Full Screen */}
-      <main
-        className="flex-grow relative bg-cover bg-center flex flex-col items-center justify-center text-center px-4"
+      {/* Hero Section */}
+      <div
         style={{
+          flex: 1,
           backgroundImage: 'url(https://i.pinimg.com/736x/ad/8e/97/ad8e974a82efd6e89c01ec32004c0075.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          position: 'relative',
         }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-40" />
+        {/* Dim background overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          }}
+        />
 
-        <div className="relative z-10 max-w-2xl">
-          <h2 className="text-4xl md:text-5xl italic font-semibold mb-2">Partake In Our</h2>
-          <h1 className="text-3xl md:text-4xl font-bold uppercase mb-6">Multiple Fishing Competitions!</h1>
-          <Link
-            to="/browse"
-            className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold px-6 py-3 rounded-full transition"
-          >
-            More Info
-          </Link>
+        {/* Hero Content */}
+        <Container className="h-100 d-flex justify-content-center align-items-center">
+          <Row className="text-center text-white position-relative">
+            <Col md={12}>
+              <h2 className="display-5 fw-semibold fst-italic">Welcome to FishTank!</h2>
+              <h1 className="display-6 fw-bold text-uppercase mb-4">Your Fish, Your Data, Your Way!</h1>
+              <Button
+                as={Link}
+                to="/browse"
+                variant="info"
+                className="px-4 py-2 fw-bold text-white mb-5"
+              >
+                More Info
+              </Button>
 
-          <div className="mt-12 bg-white bg-opacity-90 text-gray-800 rounded-xl px-6 py-6 shadow-lg">
-            <h3 className="text-lg text-cyan-600 italic">What Our Fishing</h3>
-            <h2 className="text-xl font-bold mb-2">Club Has To Offer!</h2>
-            <p className="text-sm text-gray-600">
-              Besides providing the fishing equipment for rent and organizing tours, we also offer lots of training!
-            </p>
-          </div>
-        </div>
-      </main>
+              {/* Offer Section */}
+              <Card
+                className="mx-auto p-4 shadow-lg"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  maxWidth: '500px',
+                }}
+              >
+                <Card.Body>
+                  <Card.Title className="text-info fst-italic">What We Offer</Card.Title>
+                  <Card.Subtitle className="mb-2 fw-bold">To Our Buyers!</Card.Subtitle>
+                  <Card.Text className="text-muted">
+                    Experience top-quality, fresh fish with every purchase. We ensure our buyers get the best catch, sourced and delivered with care.
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </div>
     </div>
   );
 };

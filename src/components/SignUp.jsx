@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode"; // ✅ Import jwt-decode
+import { jwtDecode } from "jwt-decode";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Card,
+  Alert,
+} from "react-bootstrap";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -40,21 +49,18 @@ const Signup = () => {
       const data = await res.json();
 
       if (res.ok) {
-        // ✅ Store JWT
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        // ✅ Decode token to get role
         const decoded = jwtDecode(data.token);
         const role = decoded.role;
 
-        // ✅ Redirect based on role
         if (role === "buyer") {
-          navigate("/");
+          navigate("/buyerhome");
         } else if (role === "fishermen") {
-          navigate("/fisherlogin");
+          navigate("/fishermenhome");
         } else {
-          navigate("/");
+          navigate("/dashboard");
         }
       } else {
         setError(data.message || "Signup failed.");
@@ -66,95 +72,100 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      <div className="hidden md:flex w-1/2 bg-sky-400 items-center justify-center">
+    <Container fluid className="min-vh-100 d-flex flex-column flex-md-row p-0">
+      {/* Left image section */}
+      <Col
+        md={6}
+        className="d-none d-md-flex align-items-center justify-content-center bg-info"
+      >
         <img
           src="https://i.pinimg.com/736x/48/17/2d/48172dc2448b4bb1dcce3ef929ab3082.jpg"
           alt="Signup Illustration"
-          className="w-3/4"
+          className="img-fluid w-75"
         />
-      </div>
+      </Col>
 
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-sky-50 px-8 py-12">
-        <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-md">
-          <h2 className="text-3xl font-bold text-center text-sky-600 mb-2">Create Account</h2>
-          <p className="text-center text-gray-500 mb-6">Sign up to get started</p>
+      {/* Signup form section */}
+      <Col
+        md={6}
+        className="d-flex align-items-center justify-content-center bg-light px-4 py-5"
+      >
+        <Card className="w-100 shadow rounded-4" style={{ maxWidth: "400px" }}>
+          <Card.Body>
+            <h2 className="text-center text-info mb-2">Create Account</h2>
+            <p className="text-center text-muted mb-4">Sign up to get started</p>
 
-          {error && (
-            <div className="text-red-600 text-sm mb-4 text-center">{error}</div>
-          )}
+            {error && <Alert variant="danger" className="text-center">{error}</Alert>}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-                placeholder="Your Name"
-                required
-              />
-            </div>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="name" className="mb-3">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Your Name"
+                  required
+                />
+              </Form.Group>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
+              <Form.Group controlId="email" className="mb-3">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="you@example.com"
+                  required
+                />
+              </Form.Group>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-                placeholder="••••••••"
-                required
-              />
-            </div>
+              <Form.Group controlId="password" className="mb-3">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                />
+              </Form.Group>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Role</label>
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-                required
+              <Form.Group controlId="role" className="mb-4">
+                <Form.Label>Role</Form.Label>
+                <Form.Select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="fishermen">Fishermen</option>
+                  <option value="buyer">Buyer</option>
+                </Form.Select>
+              </Form.Group>
+
+              <Button
+                variant="info"
+                type="submit"
+                className="w-100 text-white fw-semibold"
               >
-                <option value="fishermen">Fishermen</option>
-                <option value="buyer">Buyer</option>
-              </select>
-            </div>
+                Sign Up
+              </Button>
+            </Form>
 
-            <button
-              type="submit"
-              className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 rounded-lg transition duration-200"
-            >
-              Sign Up
-            </button>
-          </form>
-
-          <p className="mt-6 text-sm text-center text-gray-600">
-            Already have an account?{" "}
-            <Link to="/" className="text-sky-600 font-medium hover:underline">
-              Login
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+            <p className="mt-4 text-center text-muted">
+              Already have an account?{" "}
+              <Link to="/" className="text-info fw-medium">
+                Login
+              </Link>
+            </p>
+          </Card.Body>
+        </Card>
+      </Col>
+    </Container>
   );
 };
 
