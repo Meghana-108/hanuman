@@ -8,13 +8,15 @@ const FisherHome = () => {
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn");
     if (!loggedIn) {
-      navigate("/login");
+      navigate("/");
     }
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
-    navigate("/login");
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    navigate("/");
   };
 
   return (
