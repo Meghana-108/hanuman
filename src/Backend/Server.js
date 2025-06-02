@@ -310,7 +310,7 @@ app.post("/api/fish",  authenticateToken, upload.single("fishImage"), async (req
   }
 });
 
-app.get("/api/fishes/mine",  authenticateToken, async (req, res) => {
+app.get("/api/fish",  authenticateToken, async (req, res) => {
   try {
     const fishes = await Fish.find({ fishermanId: req.user.id });
     res.json(fishes);
@@ -321,7 +321,7 @@ app.get("/api/fishes/mine",  authenticateToken, async (req, res) => {
 app.get("/api/fishes/price-range-chart", authenticateToken, async (req, res) => {
     console.log("Price range chart route hit");
   try {
-    const fishermanId = req.user.id;
+    // const fishermanId = req.user.id;
 
    const fishes = await Fish.find();
    console.log(fishes);
@@ -346,6 +346,47 @@ app.get("/api/fishes/price-range-chart", authenticateToken, async (req, res) => 
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error', error: err.message });
   }
+});
+
+app.get('/api/fish-quantity-summary', async (req, res) => {
+  try {
+    const result = await Fish.aggregate([
+      {
+        $group: {
+          _id: "$fishName",
+          quantity: { $sum: 1 } // count uploads
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          fishName: "$_id",
+          quantity: 1
+        }
+      }
+    ]);
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch data" });
+  }
+});
+
+app.delete('/api/fish/:id', authenticateToken, async (req, res) => {
+  await Fish.findByIdAndDelete(req.params.id);
+  res.send({ message: "Fish deleted" });
+});
+
+// PUT update fish
+app.put('/api/fish/:id', authenticateToken, async (req, res) => {
+  const { fishName, location, price, status } = req.body;
+  const updated = await Fish.findByIdAndUpdate(req.params.id, {
+    fishName,
+    location,
+    price,
+    status,
+  }, { new: true });
+  res.send(updated);
 });
 
 // Start server
