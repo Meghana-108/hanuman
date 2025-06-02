@@ -318,6 +318,35 @@ app.get("/api/fishes/mine",  authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Error fetching fish" });
   }
 });
+app.get("/api/fishes/price-range-chart", authenticateToken, async (req, res) => {
+    console.log("Price range chart route hit");
+  try {
+    const fishermanId = req.user.id;
+
+   const fishes = await Fish.find();
+   console.log(fishes);
+    // Group prices by fishName
+    const fishMap = {};
+    fishes.forEach(fish => {
+      const name = fish.fishName;
+      if (!fishMap[name]) fishMap[name] = [];
+      fishMap[name].push(fish.price);
+    });
+
+    // Calculate min and max price for each fishName
+    const priceRanges = Object.keys(fishMap).map(name => {
+      const prices = fishMap[name];
+      return {
+        name,
+        minPrice: Math.min(...prices),
+        maxPrice: Math.max(...prices),
+      };
+    });
+    res.json({ success: true, data: priceRanges });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error', error: err.message });
+  }
+});
 
 // Start server
 app.listen(PORT, () => {
