@@ -72,7 +72,7 @@ const Option = () => {
                 <Card.Text className="text-muted">
                   View an overview of your fishing activities and insights.
                 </Card.Text>
-                <Link to="/dashboard">
+                <Link to="/fisherdashboard">
                   <Button variant="secondary" className="rounded-pill px-4 bg-purple border-0">
                     Go to Dashboard
                   </Button>

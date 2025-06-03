@@ -319,6 +319,30 @@ app.get("/api/fish",  authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/api/fish-quantity-summary', async (req, res) => {
+  try {
+    const result = await Fish.aggregate([
+      {
+        $group: {
+          _id: "$fishName",
+          quantity: { $sum: 1 } // count uploads
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          fishName: "$_id",
+          quantity: 1
+        }
+      }
+    ]);
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch data" });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

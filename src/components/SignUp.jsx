@@ -58,7 +58,7 @@ const Signup = () => {
         if (role === "buyer") {
           navigate("/buyerhome");
         } else if (role === "fishermen") {
-          navigate("/fishermenhome");
+          navigate("/fisherlogin");
         } else {
           navigate("/dashboard");
         }

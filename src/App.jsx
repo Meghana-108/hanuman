@@ -9,6 +9,7 @@ import Option from "./components/Option";
 import FishDetails from "./components/FishDetails";
 import FisherDashboard from "./components/FisherDashboard";
 import BuyerDashboard from "./components/BuyerDashboard";
+import AvailableFishes from "./components/AvailableFishes";
 const App = () => {
   return (
     <Router>
@@ -20,12 +21,12 @@ const App = () => {
         <Route path="/fisherhome" element={<FisherHome/>}/>
         <Route path="/option" element={<Option/>}/>
         <Route path="/FishDetails" element={<FishDetails/>}/>
-        <Route path="/fisherdashboard" element={<FisherDashboard/>}/>
+        <Route path="/fisherdashboard" element={<FisherDashboard/>} />
         <Route path="/buyer-dashboard" element={<BuyerDashboard/>}/>
+        <Route path="/available-fishes" element={<AvailableFishes/>}/>
       </Routes>
     </Router>
   );
 };
 
 export default App;
-
