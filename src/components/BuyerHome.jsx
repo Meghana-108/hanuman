@@ -23,8 +23,17 @@ const BuyerHome = () => {
         <Navbar.Brand className="text-info fw-bold">⚓ FishTank</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-         
-        </Navbar.Collapse>
+  <Nav className="ms-auto">
+    <Button
+      onClick={handleLogout}
+      variant="info"
+      className="px-4 py-2 fw-bold text-white mb-1"
+    >
+      Logout
+    </Button>
+  </Nav>
+</Navbar.Collapse>
+
       </Navbar>
 
       {/* Hero Section */}
@@ -48,7 +57,7 @@ const BuyerHome = () => {
 
         {/* Hero Content */}
         <Container className="h-100 d-flex justify-content-center align-items-center">
-          <Row className="text-center text-white position-relative">
+          <Row className="text-center text-white position-relative mt-5">
             <Col md={12}>
               <h2 className="display-5 fw-semibold fst-italic">Welcome to FishTank!</h2>
               <h1 className="display-6 fw-bold text-uppercase mb-4">Your Fish, Your Data, Your Way!</h1>
@@ -56,7 +65,7 @@ const BuyerHome = () => {
   as={Link}
   to="/buyer-dashboard"
   variant="info"
-  className="px-4 py-2 fw-bold text-white mb-5"
+  className="px-4 py-2 fw-bold text-white mb-5 mt-5"
 >
   More Info
 </Button>
@@ -81,12 +90,7 @@ const BuyerHome = () => {
           </Row>
         </Container>
       </div>
-      <button
-          onClick={handleLogout}
-          className="bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow hover:bg-red-700 transition duration-300"
-        >
-          Logout
-        </button>
+      
     </div>
   );
 };

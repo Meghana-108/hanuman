@@ -24,7 +24,7 @@ const App = () => {
         <Route path="/fisherhome" element={<FisherHome/>}/>
         <Route path="/option" element={<Option/>}/>
         <Route path="/FishDetails" element={<FishDetails/>}/>
-        <Route path="/fisherdashboard" element={<FisherDashboard/>}/>
+        <Route path="/fisherdashboard" element={<FisherDashboard/>} />
         <Route path="/buyer-dashboard" element={<BuyerDashboard/>}/>
         <Route path="/available-fishes" element={<AvailableFishes/>}/>
         <Route path="/price-analytics" element={<PriceAnalytics/>}/>
@@ -36,4 +36,3 @@ const App = () => {
 };
 
 export default App;
-
