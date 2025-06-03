@@ -10,6 +10,9 @@ import FishDetails from "./components/FishDetails";
 import FisherDashboard from "./components/FisherDashboard";
 import BuyerDashboard from "./components/BuyerDashboard";
 import AvailableFishes from "./components/AvailableFishes";
+import PriceAnalytics from "./components/PriceAnalytics";
+import BrowseFishes from "./components/BrowseFishes";
+
 const App = () => {
   return (
     <Router>
@@ -24,6 +27,8 @@ const App = () => {
         <Route path="/fisherdashboard" element={<FisherDashboard/>} />
         <Route path="/buyer-dashboard" element={<BuyerDashboard/>}/>
         <Route path="/available-fishes" element={<AvailableFishes/>}/>
+        <Route path="/price-analytics" element={<PriceAnalytics/>}/>
+        <Route path="/browse" element={<BrowseFishes/>}/>
       </Routes>
     </Router>
   );

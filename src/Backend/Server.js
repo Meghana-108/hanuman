@@ -318,6 +318,35 @@ app.get("/api/fish",  authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Error fetching fish" });
   }
 });
+app.get("/api/fishes/price-range-chart", authenticateToken, async (req, res) => {
+    console.log("Price range chart route hit");
+  try {
+    // const fishermanId = req.user.id;
+
+   const fishes = await Fish.find();
+   console.log(fishes);
+    // Group prices by fishName
+    const fishMap = {};
+    fishes.forEach(fish => {
+      const name = fish.fishName;
+      if (!fishMap[name]) fishMap[name] = [];
+      fishMap[name].push(fish.price);
+    });
+
+    // Calculate min and max price for each fishName
+    const priceRanges = Object.keys(fishMap).map(name => {
+      const prices = fishMap[name];
+      return {
+        name,
+        minPrice: Math.min(...prices),
+        maxPrice: Math.max(...prices),
+      };
+    });
+    res.json({ success: true, data: priceRanges });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error', error: err.message });
+  }
+});
 
 app.get('/api/fish-quantity-summary', async (req, res) => {
   try {
@@ -342,6 +371,59 @@ app.get('/api/fish-quantity-summary', async (req, res) => {
     res.status(500).json({ error: "Failed to fetch data" });
   }
 });
+
+app.delete('/api/fish/:id', authenticateToken, async (req, res) => {
+  await Fish.findByIdAndDelete(req.params.id);
+  res.send({ message: "Fish deleted" });
+});
+
+// PUT update fish
+app.put('/api/fish/:id', authenticateToken, async (req, res) => {
+  const { fishName, location, price, status } = req.body;
+  const updated = await Fish.findByIdAndUpdate(req.params.id, {
+    fishName,
+    location,
+    price,
+    status,
+  }, { new: true });
+  res.send(updated);
+});
+
+app.get('/api/fishes', async (req, res) => {
+  try {
+    const fishes = await Fish.aggregate([
+      {
+        $lookup: {
+          from: 'fishermen_verify',  // ensure this matches your actual collection name
+          localField: 'fishermanId',
+          foreignField: '_id',
+          as: 'fishermenInfo',
+        },
+      },
+      {
+        $unwind: {
+          path: '$fishermenInfo',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          fishName: 1,
+          price: 1,
+          imageUrl: 1,
+          fishermenName: '$fishermenInfo.name',
+        },
+      },
+    ]);
+
+
+    res.json(fishes);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 // Start server
 app.listen(PORT, () => {
