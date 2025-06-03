@@ -12,7 +12,7 @@ import BuyerDashboard from "./components/BuyerDashboard";
 import AvailableFishes from "./components/AvailableFishes";
 import PriceAnalytics from "./components/PriceAnalytics";
 import BrowseFishes from "./components/BrowseFishes";
-
+import OrderPage from './components/OrderPage';
 const App = () => {
   return (
     <Router>
@@ -29,6 +29,7 @@ const App = () => {
         <Route path="/available-fishes" element={<AvailableFishes/>}/>
         <Route path="/price-analytics" element={<PriceAnalytics/>}/>
         <Route path="/browse" element={<BrowseFishes/>}/>
+         <Route path="/order/:fishId" element={<OrderPage />} />
       </Routes>
     </Router>
   );

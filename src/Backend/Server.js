@@ -424,6 +424,28 @@ app.get('/api/fishes', async (req, res) => {
   }
 });
 
+app.get('/api/fishes/:id', async (req, res) => {
+  try {
+    const fish = await Fish.findById(req.params.id).populate('fishermanId', 'name');
+    if (!fish) return res.status(404).json({ message: 'Fish not found' });
+
+    // Return data with fisherman name as fishermenName for frontend convenience
+    res.json({
+      _id: fish._id,
+      fishName: fish.fishName,
+      price: fish.price,
+      imageUrl: fish.imageUrl,
+      fishermenName: fish.fishermanId?.name || 'Unknown',
+      location: fish.location,
+      status: fish.status,
+      createdAt: fish.createdAt,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 // Start server
 app.listen(PORT, () => {

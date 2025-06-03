@@ -1,6 +1,5 @@
-// PriceAnalytics.jsx
 import React, { useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import {
   ResponsiveContainer,
@@ -13,33 +12,36 @@ import {
 } from 'recharts';
 
 const PriceAnalytics = () => {
-    console.log("hello")
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
         const token = localStorage.getItem('token');
-        console.log('Token from localStorage:', token);
+        if (!token) {
+          setError('User not authenticated. Please login.');
+          setLoading(false);
+          return;
+        }
 
         const res = await axios.get('http://localhost:5000/api/fishes/price-range-chart', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
         if (res.data.success) {
-          // Add priceRange field = maxPrice - minPrice
           const chartData = res.data.data.map(item => ({
             ...item,
             priceRange: item.maxPrice - item.minPrice
           }));
-          console.log("Received data:", chartData);
           setData(chartData);
+          setError(null);
         } else {
-          console.error('Failed to fetch chart data');
+          setError('Failed to fetch chart data from server.');
         }
       } catch (err) {
-        console.error('Error fetching chart data:', err.message);
+        setError('Error fetching chart data: ' + err.message);
       } finally {
         setLoading(false);
       }
@@ -50,10 +52,26 @@ const PriceAnalytics = () => {
 
   return (
     <Container className="py-5">
-      <h2 className="text-primary text-center mb-4 fw-bold">Fish Price Analytics</h2>
-      {loading ? (
-        <p className="text-center">Loading...</p>
-      ) : (
+      <h2 className="text-info text-center mb-4 fw-bold">Fish Price Analytics</h2>
+
+      {loading && (
+        <div className="text-center my-5">
+          <Spinner animation="border" variant="primary" />
+          <p className="mt-3">Loading data, please wait...</p>
+        </div>
+      )}
+
+      {error && (
+        <Alert variant="danger" className="text-center">
+          {error}
+        </Alert>
+      )}
+
+      {!loading && !error && data.length === 0 && (
+        <p className="text-center text-muted">No data available to display.</p>
+      )}
+
+      {!loading && !error && data.length > 0 && (
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
             data={data}
@@ -68,8 +86,8 @@ const PriceAnalytics = () => {
             />
             <YAxis dataKey="name" type="category" />
             <Tooltip />
-            <Bar dataKey="minPrice" stackId="a" fill="#90caf9" name="Min Price" />
-            <Bar dataKey="priceRange" stackId="a" fill="#1976d2" name="Price Range" />
+            <Bar dataKey="minPrice" stackId="a" fill="#0dcaf0" name="Min Price" />
+            <Bar dataKey="priceRange" stackId="a" fill="#0d6efd" name="Price Range" />
           </BarChart>
         </ResponsiveContainer>
       )}
