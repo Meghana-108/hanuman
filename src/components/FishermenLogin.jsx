@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import {
   Container,
@@ -11,6 +12,7 @@ import {
 } from 'react-bootstrap';
 
 function FishermenLogin() {
+    const navigate=useNavigate()
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -49,7 +51,8 @@ function FishermenLogin() {
       });
       if (res.data.success) {
         alert('Login Successful');
-        window.location.href = '/home';
+        localStorage.setItem("isLoggedIn", true);
+        navigate('/fisherhome')
       } else {
         setError(res.data.message);
       }

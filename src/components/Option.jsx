@@ -50,7 +50,7 @@ const Option = () => {
                 <Card.Text className="text-muted">
                   Analyze market trends to optimize your fish pricing strategy.
                 </Card.Text>
-                <Link to="/priceanalytics">
+                <Link to="/price-analytics">
                   <Button variant="success" className="rounded-pill px-4">
                     View Analytics
                   </Button>

@@ -18,7 +18,7 @@ const Login = () => {
         if (role === "buyer") {
           navigate("/buyerhome");
         } else if (role === "fishermen") {
-          navigate("/fishermenhome");
+          navigate("/fisherhome");
         } else {
           navigate("/dashboard");
         }
@@ -55,7 +55,7 @@ const Login = () => {
           if (role === "buyer") {
             navigate("/buyerhome");
           } else if (role === "fishermen") {
-            navigate("/fishermenhome");
+            navigate("/fisherhome");
           } else {
             navigate("/dashboard");
           }
