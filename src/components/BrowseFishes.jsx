@@ -56,7 +56,8 @@ const goToOrderPage = (fishId) => {
                 <Button variant="success" onClick={() => goToOrderPage(fish._id)}>
   Order
 </Button>
-                  <Button variant="warning">Negotiate</Button>
+<Button variant="warning" onClick={() => navigate("/chat/buyer")}>Negotiate</Button>
+
                 </div>
               </Card.Body>
             </Card>

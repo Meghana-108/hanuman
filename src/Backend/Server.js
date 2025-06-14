@@ -447,7 +447,42 @@ app.get('/api/fishes/:id', async (req, res) => {
 });
 
 
+
 // Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+import http from 'http';
+import { Server } from 'socket.io';
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Attach Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
 });
+io.on("connection", (socket) => {
+  console.log("⚡ User connected:", socket.id);
+
+  // Join a private room (e.g., based on customer-fisherman chatId)
+  socket.on("join_room", (roomId) => {
+    socket.join(roomId);
+    console.log(`👥 Socket ${socket.id} joined room ${roomId}`);
+  });
+
+  // Receive and forward messages in room
+  socket.on("send_message", ({ roomId, message, sender }) => {
+    console.log(`📩 ${sender} sent message in room ${roomId}: ${message}`);
+    io.to(roomId).emit("receive_message", { message, sender });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("❌ User disconnected:", socket.id);
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
+
